@@ -1,0 +1,31 @@
+
+
+wpa_supplicant 
+
+nmcli - инструмент командной строки для управления NetworkManager и создания отчетов о состоянии сети. Используется для создания, отображения, редактирования, удаления, активации и деактивации сетевых подключений, контроля и отображения состояния сетевых устройств.
+
+Скрипты - nmcli поддерживает краткий формат вывода, подходит для обработки сценариев.
+
+# nmcli radio wifi (вывод - enabled/disabled)- стстус wifi
+
+# nmcli radio wifi on (of) - вкл./выкл.))
+
+# nmcli dev status - состояние сетевых карт
+
+# nmcli dev wifi list - сканирование 
+
+# (sudo) nmcli dev wifi connect <SSID> password <my_password>  - подключение
+
+# (sudo) nmcli --ask dev wifi connect <SSID> - подключение с запросом пароля
+
+# nmcli dev status - состояние устройств
+
+# nmcli show active --active - показать активные подключения
+
+# nmcli con sh - показать UUID
+
+# (sudo) nmcli con del <SSID> - удалить соединение используя SSID
+
+# (sudo) nmcli con del <UUID> - то же используя UUID
+
+# nmcli con up/down <SSID or UUID> - поднять/уронить
