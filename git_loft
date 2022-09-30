@@ -47,10 +47,11 @@ git rm --cached [file] — удалить файл из репозитория, 
 git mv [file-original] [file-renamed] — изменить имя файла и добавить в индекс коммита.
 
 Отслеживание файлов
-.gitignore — текстовый файл, в котором задаются правила для исключения файлов из репозитория. Например:
+.gitignore — Все перечисленное в этом файле git не видит. Файлы, папки, и так далее. For ex.:
 
-*.log
-build/
+some_name.txt
+*.yaml
+my_proj/
 
 temp-*
 git ls-files --other --ignored --exclude-standard — список всех игнорируемых файлов.
