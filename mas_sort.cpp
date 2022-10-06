@@ -3,7 +3,7 @@
 #include <iostream> // ввод/вывод
 #include <iomanip> // форматирование вывода
 #include <cstdlib> // генератор псевдослучайных чисел
-#define n 5 // строк в массиве
+#define n 9 // строк в массиве
 #define m 6 // элементов в строке
 
 using namespace std;
