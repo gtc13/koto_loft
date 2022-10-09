@@ -1,0 +1,54 @@
+ВНИМАНИЕ!!! Неправильно выполненная автоматизация или неверная настройка могут завести в конкретную жопу! Посему в эти места лучше не лазить имея сомнения в компетентности, а сомнения в компетентности убирать исключительно в тестовых средах!!! 
+На самом деле задача весьма simple, просто надо понимать что делаешь.
+Важно! При сомнениях в адекватности происходящего на хосте, рекомендуется заглянуть в файл /var/log/messeges на предмет:
+1. Когда получен и получен ли DHCP-запрос;
+2. IP назначенный конкретному MAC;
+3. Когда выполняется монтирование NFS и с какого IP;
+4. Там можно найти еще много чего интересного про PXE-сервер.
+
+PXE (Preboot eXecution Environment) - (охренеть конечно какая мастадонтная штукенция, появидась аж в начале 90-х для усовершенствования серии протоколов, используемых для начальной загрузки бездисковых клиентов).
+Использует TFTP (Trivial File Transfer Protocol) для передачи файлов.
+Использует DHCP для доставки данных конфигурации сети.
+syslinux - очень маленькая ОС, отправляется на хост во время процесса загрузки. Затем она считывает файлы конфиги и производит автоматическую загрузку определенных параметров в зависимости от конфигурации, или предоставляет пользователю варианты загрузки.
+
+Компоненты PXE:
+1. DHCP-сервер
+$ apt install isc-dhcp-server
+$ nano /etc/dhcp/dhcpd.conf
+# the possibilities would be: ISP connected directly, set router to give only static IPs, make the PXE/DHCP/TFTP server also a gateway or create a local repository.
+ddns-update-style none;
+DHCPDARGS=eth1;
+default-lease-time 86400;
+max-lease-time 604800;
+authoritative;
+subnet 000.000.0.0 netmask 255.255.255.0 {
+        range 000.000.0.10 000.000.0.30;
+        filename "pxelinux.0";
+        option subnet-mask 255.255.255.0;
+}
+$ systemctl restart isc-dhcp-server
+2. TFTP-сервер. NetBoot server PXE 
+$ apt install tftpd-hpa pxelinux
+$ systemctl start tftpd-hpa 
+- загрузить образ network install
+- распаковать netinstall в /srv/tftp. Должно получится примерно так:
+debian-installer/
+pxelinux.0@
+pxelinux.cfg@
+version.info
+$ chmod -R a+r /srv/tftp/*
+3. Client PXE. Изменить в настройках BIOS(UEFI) на загрузку по сети.
+
+Порядок работы PXE:
+1. Процесс настройки DHCP:
+1.1. Инициация PXE во время загрузки. Отправка пакета discover в виде широковещательного запроса на DHCP-сервер (настройку сети).
+1.2. DHCP-сервер отправляет offer, и после анализа offer серверу PXE будет присвоен IP, subnet mask, & etc.
+2. Процесс загрузки PXE:
+2.1. Сервер уведомляет DHCP-сервер, что использует PXE
+2.2. DHCP-cервер отвечает специальной опцией Option66, которая указывает машине где искать PXE_boot_server TFTP (NextBoot Server), и опцией BootFilename Option67
+2.3. Сервер запрашивает загрузочные файлы у PXE_boot_server
+2.4. Загрузочный файл загружается через TFTP, происходит загрузка ОС.
+
+
+Для RHEL anaconda kickstart
+
